@@ -1,0 +1,33 @@
+<additive-expression> ::= <multiplicative-expression>
+                        | <additive-expression> + <multiplicative-expression>
+                        | <additive-expression> - <multiplicative-expression>
+<multiplicative-expression> ::= <cast-expression>
+                              | <multiplicative-expression> * <cast-expression>
+                              | <multiplicative-expression> / <cast-expression>
+                              | <multiplicative-expression> % <cast-expression>
+    
+<expression> ::= <term>
+               | <expression> + <term>
+               | <expression> - <term>
+
+<term> ::= <factor>
+         | <term> * <factor>
+         | <term> / <factor>
+
+<factor> ::= <func>
+           | - <factor>
+           | + <factor>
+
+<func> ::= <primary>
+         | <'sin('primary')'>
+         | <'cos('primary')'>
+         | <'tan('primary')'>
+         | <'exp('primary')'>
+         | <'ln('primary')'>
+         | <'log('primary')'>
+         | <'pow('primary ',' primary ')'>
+
+<primary> ::= <IDENTIFIER>
+            | <INTEGER>
+            | <FLOATING_POINT_LITERAL>
+            | <'(' expression ')'>
