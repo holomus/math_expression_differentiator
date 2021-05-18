@@ -1,0 +1,59 @@
+<expression> ::= <term>
+               | <expression> + <term>
+               | <expression> - <term>
+
+<term> ::= <factor>
+         | <term> * <factor>
+         | <term> / <factor>
+
+<factor> ::= <func>
+           | - <factor>
+           | + <factor>
+           | <power>
+
+<power> ::= <func> '^' <factor>
+
+<func> ::= <primary>
+         | <'sin('primary')'>
+         | <'cos('primary')'>
+         | <'tan('primary')'>
+         | <'exp('primary')'>
+         | <'ln('primary')'>
+         | <'log('primary')'>
+         | <'func('primary')'>
+         | <'sqrt('primary')'>
+
+<primary> ::= <IDENTIFIER>
+            | <INTEGER>
+            | <FLOATING_POINT_LITERAL>
+            | <'(' expression ')'>
+
+
+EXPR ::=   EXPR + EXPR
+         | EXPR - EXPR
+         
+         | EXPR * EXPR
+         | EXPR / EXPR
+         
+         | EXPR ^ EXPR
+
+         | - EXPR
+         | + EXPR
+
+         | SIN  EXPR
+         | COS  EXPR
+         | TAN  EXPR
+         | EXP  EXPR
+         | LN   EXPR
+         | LOG  EXPR
+         | SQRT EXPR
+         | FUNC EXPR
+         
+         | LPAREN EXPR RPAREN
+
+         | NUMBER
+         | ID
+
+
+
+
