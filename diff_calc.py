@@ -62,36 +62,32 @@ class mathParser(Parser):
             self.head = head
             self.dot = Digraph()
             self.dot.node(self.head)
-            
-    
+        
+        def to_python_expr(self):
+            pass
+
+        def differentiate_expr(self):
+            pass
 
     class UnOp(Expr):
         def __init__(self, op, expr):
             super().__init__(op)
 
-            self.op = op
             self.expr = expr
 
             self.dot.subgraph(self.expr.dot)
             self.dot.edge(self.head, self.expr.head)
-            
 
 
-    class Func(Expr):
+
+    class Func(UnOp):
         def __init__(self, func, expr):
-            super().__init__(func)
-
-            self.func = func
-            self.expr = expr
-
-            self.dot.subgraph(self.expr.dot)
-            self.dot.edge(self.head, self.expr.head)
+            super().__init__(func, expr)
 
     class BinOp(Expr):
         def __init__(self, op, left, right):
             super().__init__(op)
 
-            self.op = op
             self.left = left
             self.right = right
 
@@ -100,16 +96,15 @@ class mathParser(Parser):
 
             self.dot.edge(self.head, self.left.head)
             self.dot.edge(self.head, self.right.head)
-            
-            
 
+        
     class ID(Expr):
         def __init__(self, id):
             super().__init__(id)
 
-            self.id = id
 
-    class Number(Expr):
+
+    class Number(ID):
         def __init__(self, value):
             super().__init__(str(value))
             
