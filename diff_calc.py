@@ -78,11 +78,16 @@ class mathParser(Parser):
             self.dot.subgraph(self.expr.dot)
             self.dot.edge(self.head, self.expr.head)
 
+        def to_python_expr(self):
+            return self.head + "(" + self.expr.to_python_expr() + ")" 
 
 
     class Func(UnOp):
         def __init__(self, func, expr):
             super().__init__(func, expr)
+
+        def differentiate_expr(self):
+            pass
 
     class BinOp(Expr):
         def __init__(self, op, left, right):
@@ -97,11 +102,24 @@ class mathParser(Parser):
             self.dot.edge(self.head, self.left.head)
             self.dot.edge(self.head, self.right.head)
 
+        def to_python_expr(self):
+            head = self.head
+            if (self.head == "^"):
+                head = "**"
+            return "(" + self.left.to_python_expr() + head + self.right.to_python_expr() + ")"
+
+        def differentiate_expr(self):
+            pass
         
     class ID(Expr):
         def __init__(self, id):
             super().__init__(id)
 
+        def to_python_expr(self):
+            return "x"
+
+        def differentiate_expr(self):
+            return "1"
 
 
     class Number(ID):
@@ -110,6 +128,8 @@ class mathParser(Parser):
             
             self.value = value
 
+        def differentiate_expr(self):
+            return "0"
 
     # Grammar rules and actions
     @_('expr PLUS expr',
