@@ -28,6 +28,21 @@
             | <FLOATING_POINT_LITERAL>
             | <'(' expression ')'>
 
+PROGRAM ::= OPTFUNCS OPTDIFFARG OPTEXPRS
+
+OPTFUNCS ::= EMPTY | FUNCS
+
+OPTDIFFARG ::= EMPTY | DIFFARG
+
+OPTEXPRS ::= EMPTY | EXPRS
+
+FUNCS ::= FUNC FUNCS | FUNC
+
+FUNC ::= def id '(' id ')' '{' EXPR '}' 
+
+DIFFARG ::= '{' diffby id '}'
+
+EXPRS ::= '{' EXPR '}' EXPRS | EXPR
 
 EXPR ::=   EXPR + EXPR
          | EXPR - EXPR
@@ -40,19 +55,19 @@ EXPR ::=   EXPR + EXPR
          | - EXPR
          | + EXPR
 
-         | SIN  EXPR
-         | COS  EXPR
-         | TAN  EXPR
-         | EXP  EXPR
-         | LN   EXPR
-         | LOG  EXPR
-         | SQRT EXPR
-         | FUNC EXPR
+         | sin  EXPR
+         | cos  EXPR
+         | tan  EXPR
+         | exp  EXPR
+         | ln   EXPR
+         | log  EXPR
+         | sqrt EXPR
+         | func EXPR
          
-         | LPAREN EXPR RPAREN
-
-         | NUMBER
-         | ID
+         | '(' EXPR ')'
+         
+         | number
+         | id
 
 
 
