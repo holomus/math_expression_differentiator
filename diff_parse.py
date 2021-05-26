@@ -5,6 +5,7 @@ import ast_nodes as ast
 
 class mathParser(Parser):
     tokens = mathLexer.tokens
+    debugfile = "parser.out"
 
     # Operator predence taken from
     # Python operator precedence list
@@ -20,7 +21,6 @@ class mathParser(Parser):
 
     def __init__(self) -> None:
         super().__init__()
-        debugfile = "parser.out"
         self.names = {}
         self.funcs = {}
         self.diff_arg = ''
