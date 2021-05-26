@@ -57,10 +57,45 @@ class mathParser(Parser):
         self.names = { }
 
     # Syntax tree node kinds
+    class Program:
+        def __init__(self) -> None:
+            self.dot = Digraph()
+    
+    class Funcs(Program):
+        def __init__(self, func, funcs) -> None:
+            super().__init__()
+            self.func = func
+            self.funcs = funcs
+    
+    class Func(Program):
+        def __init__(self, name, arg, expr) -> None:
+            super().__init__()
+            self.name = name
+            self.arg = arg
+            self.expr = expr
+            
+            self.dot.node(self.name + "(" + self.arg + ")")
+            self.dot.subgraph(self.expr.dot)
+            self.dot.edge(self.name + "(" + self.arg + ")", self.expr.head)
+            
+    
+    class DIFFARG(Program):
+        def __init(self, diffby) -> None:
+            super().__init__()
+            self.diffby = diffby
+            
+            self.dot.node("diif by " + self.diffby)
+    
+    class Exprs(Program):
+        def __init__(self, expr, exprs) -> None:
+            super().__init__()
+            self.expr = expr
+            self.exprs = exprs
+            
+    
     class Expr:
         def __init__(self, head) -> None:
             self.head = head
-            self.dot = Digraph()
             self.dot.node(self.head)
         
         def to_python_expr(self):
@@ -82,7 +117,7 @@ class mathParser(Parser):
             return self.head + "(" + self.expr.to_python_expr() + ")" 
 
 
-    class Func(UnOp):
+    class FuncOp(UnOp):
         def __init__(self, func, expr):
             super().__init__(func, expr)
 
