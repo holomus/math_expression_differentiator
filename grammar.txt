@@ -32,7 +32,8 @@ EXPR ::=   EXPR + EXPR
          | ln   EXPR
          | log  EXPR
          | sqrt EXPR
-         | func EXPR
+
+         | id EXPR
          
          | '(' EXPR ')'
          

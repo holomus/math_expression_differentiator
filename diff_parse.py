@@ -72,8 +72,8 @@ class mathParser(Parser):
         if p.ID0 in self.funcs:
             print("Function " + p.ID0 + " already defined")
         else:
-            self.funcs[self.ID0] = ast.Func(p.ID0, p.ID1, p.expr)
-            return self.funcs[self.ID0]
+            self.funcs[p.ID0] = ast.Func(p.ID0, p.ID1, p.expr)
+            return self.funcs[p.ID0]
 
     @_('"{" DIFF ID "}"')
     def diffarg(self, p):

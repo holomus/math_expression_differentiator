@@ -52,6 +52,7 @@ class Exprs(Base):
 
 class Expr(Base):
     def __init__(self, head, funcs) -> None:
+        super().__init__()
         self.head = head
         self.dot.node(self.head)
         self.funcs = funcs
