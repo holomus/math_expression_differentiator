@@ -1,33 +1,18 @@
-<expression> ::= <term>
-               | <expression> + <term>
-               | <expression> - <term>
+PROGRAM ::= OPTFUNCS OPTDIFFARG OPTEXPRS
 
-<term> ::= <factor>
-         | <term> * <factor>
-         | <term> / <factor>
+OPTFUNCS ::= EMPTY | FUNCS
 
-<factor> ::= <func>
-           | - <factor>
-           | + <factor>
-           | <power>
+OPTDIFFARG ::= EMPTY | DIFFARG
 
-<power> ::= <func> '^' <factor>
+OPTEXPRS ::= EMPTY | EXPRS
 
-<func> ::= <primary>
-         | <'sin('primary')'>
-         | <'cos('primary')'>
-         | <'tan('primary')'>
-         | <'exp('primary')'>
-         | <'ln('primary')'>
-         | <'log('primary')'>
-         | <'func('primary')'>
-         | <'sqrt('primary')'>
+FUNCS ::= FUNC FUNCS | FUNC
 
-<primary> ::= <IDENTIFIER>
-            | <INTEGER>
-            | <FLOATING_POINT_LITERAL>
-            | <'(' expression ')'>
+FUNC ::= def id '(' id ')' '{' EXPR '}' 
 
+DIFFARG ::= '{' diffby id '}'
+
+EXPRS ::= '{' EXPR '}' EXPRS | EXPR
 
 EXPR ::=   EXPR + EXPR
          | EXPR - EXPR
@@ -40,20 +25,19 @@ EXPR ::=   EXPR + EXPR
          | - EXPR
          | + EXPR
 
-         | SIN  EXPR
-         | COS  EXPR
-         | TAN  EXPR
-         | EXP  EXPR
-         | LN   EXPR
-         | LOG  EXPR
-         | SQRT EXPR
-         | FUNC EXPR
+         | sin  EXPR
+         | cos  EXPR
+         | tan  EXPR
+         | exp  EXPR
+         | ln   EXPR
+         | log  EXPR
+         | sqrt EXPR
+         | func EXPR
          
-         | LPAREN EXPR RPAREN
-
-         | NUMBER
-         | ID
-
+         | '(' EXPR ')'
+         
+         | number
+         | id
 
 
 
