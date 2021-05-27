@@ -6,6 +6,7 @@ from graphviz import Digraph
 class Base:
     def __init__(self) -> None:
         self.dot = Digraph()
+        self.name = str(id(self))
 
 
 class Program(Base):
@@ -15,6 +16,17 @@ class Program(Base):
         self.diffarg = diffarg
         self.exprs = exprs
 
+        self.dot.node(self.name, label="Program")
+        if self.funcs is not None:
+            self.dot.subgraph(self.funcs.dot)
+            self.dot.edge(self.name, self.funcs.name)
+        if self.diffarg is not None:
+            self.dot.subgraph(self.diffarg.dot)
+            self.dot.edge(self.name, self.diffarg.name)
+        if self.exprs is not None:
+            self.dot.subgraph(self.exprs.dot)
+            self.dot.edge(self.name, self.exprs.name)
+
 
 class Funcs(Base):
     def __init__(self, func, funcs) -> None:
@@ -22,17 +34,25 @@ class Funcs(Base):
         self.func = func
         self.funcs = funcs
 
+        self.dot.node(self.name, label="Funcs")
+        if self.funcs is not None:
+            self.dot.subgraph(self.funcs.dot)
+            self.dot.edge(self.name, self.funcs.name)
+
+        self.dot.subgraph(self.func.dot)
+        self.dot.edge(self.name, self.func.name)
+
 
 class Func(Base):
-    def __init__(self, name, arg, expr) -> None:
+    def __init__(self, funcname, arg, expr) -> None:
         super().__init__()
-        self.name = name
+        self.funcname = funcname
         self.arg = arg
         self.expr = expr
 
-        self.dot.node(self.name + "(" + self.arg + ")")
+        self.dot.node(self.name, label=self.funcname + "(" + self.arg + ")")
         self.dot.subgraph(self.expr.dot)
-        self.dot.edge(self.name + "(" + self.arg + ")", self.expr.head)
+        self.dot.edge(self.name, self.expr.name)
 
 
 class DIFFARG(Base):
@@ -40,7 +60,7 @@ class DIFFARG(Base):
         super().__init__()
         self.diffby = diffby
 
-        self.dot.node("diff by " + self.diffby)
+        self.dot.node(self.name, label="diff by " + self.diffby)
 
 
 class Exprs(Base):
@@ -49,18 +69,27 @@ class Exprs(Base):
         self.expr = expr
         self.exprs = exprs
 
+        self.dot.node(self.name, label="Exprs")
+
+        if self.exprs is not None:
+            self.dot.subgraph(self.exprs.dot)
+            self.dot.edge(self.name, self.exprs.name)
+
+        self.dot.subgraph(self.expr.dot)
+        self.dot.edge(self.name, self.expr.name)
+
 
 class Expr(Base):
     def __init__(self, head, funcs) -> None:
         super().__init__()
         self.head = head
-        self.dot.node(self.head)
+        self.dot.node(self.name, label=self.head)
         self.funcs = funcs
 
     def to_python_expr(self):
         pass
 
-    def differentiate_expr(self):
+    def differentiate_expr(self, diffarg):
         pass
 
 
@@ -71,21 +100,27 @@ class UnOp(Expr):
         self.expr = expr
 
         self.dot.subgraph(self.expr.dot)
-        self.dot.edge(self.head, self.expr.head)
+        self.dot.edge(self.name, self.expr.name)
 
     def to_python_expr(self):
         return "(" + self.head + self.expr.to_python_expr() + ")"
 
-    def differentiate_expr(self):
-        return "(" + self.head + self.expr.differentiate_expr() + ")"
+    def differentiate_expr(self, diffarg):
+        return "(" + self.head + self.expr.differentiate_expr(diffarg) + ")"
 
 
 class FuncOp(UnOp):
     def __init__(self, func, expr, funcs):
         super().__init__(func, expr, funcs)
 
-    def differentiate_expr(self):
-        expr_diff = self.expr.differentiate_expr()
+    def to_python_expr(self):
+        if self.head in self.funcs:
+            pass
+        else:
+            super().to_python_expr()
+
+    def differentiate_expr(self, diffarg):
+        expr_diff = self.expr.differentiate_expr(diffarg)
         if expr_diff == "0":
             return "0"
 
@@ -135,8 +170,8 @@ class BinOp(Expr):
         self.dot.subgraph(self.left.dot)
         self.dot.subgraph(self.right.dot)
 
-        self.dot.edge(self.head, self.left.head)
-        self.dot.edge(self.head, self.right.head)
+        self.dot.edge(self.name, self.left.name)
+        self.dot.edge(self.name, self.right.name)
 
     def to_python_expr(self):
         head = self.head
@@ -177,10 +212,10 @@ class BinOp(Expr):
                         return "1"
         return "(" + self.left.to_python_expr() + head + self.right.to_python_expr() + ")"
 
-    def differentiate_expr(self):
+    def differentiate_expr(self, diffarg):
 
-        left_diff = self.left.differentiate_expr()
-        right_diff = self.right.differentiate_expr()
+        left_diff = self.left.differentiate_expr(diffarg)
+        right_diff = self.right.differentiate_expr(diffarg)
 
         if left_diff == "0" and right_diff == "0":
             return "0"
@@ -287,10 +322,10 @@ class ID(Expr):
     def to_python_expr(self):
         return self.head
 
-    def differentiate_expr(self):
-        # if self.head == self.diff_arg:
-        #     return "1"
-        return "1"
+    def differentiate_expr(self, diffarg):
+        if self.head == diffarg:
+            return "1"
+        return "0"
 
 
 class Number(Expr):
@@ -301,5 +336,5 @@ class Number(Expr):
     def to_python_expr(self):
         return self.head
 
-    def differentiate_expr(self):
+    def differentiate_expr(self, diffarg):
         return "0"

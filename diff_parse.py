@@ -21,9 +21,11 @@ class mathParser(Parser):
 
     def __init__(self) -> None:
         super().__init__()
-        self.names = {}
         self.funcs = {}
-        self.diff_arg = ''
+
+    def parse(self, tokens):
+        self.funcs = {}
+        return super().parse(tokens)
 
     # Grammar rules and actions
 
