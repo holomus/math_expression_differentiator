@@ -27,6 +27,17 @@ class Program(Base):
             self.dot.subgraph(self.exprs.dot)
             self.dot.edge(self.name, self.exprs.name)
 
+    def exec(self):
+        if self.funcs is not None:
+            self.funcs.compute(self.diffarg is not None)
+        if self.exprs is None:
+            print("No expressions were provided for execution")
+        result = {}
+        result["python_exprs"] = self.exprs.to_python_exprs()
+        if self.diffarg is not None:
+            result["diff_exprs"] = self.exprs.differentiate_exprs(self.diffarg())
+        return result
+
 
 class Funcs(Base):
     def __init__(self, func, funcs) -> None:
@@ -41,6 +52,12 @@ class Funcs(Base):
 
         self.dot.subgraph(self.func.dot)
         self.dot.edge(self.name, self.func.name)
+        
+    def compute(self, differentiate):
+        if self.funcs is not None:
+            self.funcs.compute(differentiate)
+        self.func.comput(differentiate)
+            
 
 
 class Func(Base):
@@ -49,18 +66,35 @@ class Func(Base):
         self.funcname = funcname
         self.arg = arg
         self.expr = expr
+        
+        self.diff_expr = None
+        self.python_expr = None
 
         self.dot.node(self.name, label=self.funcname + "(" + self.arg + ")")
         self.dot.subgraph(self.expr.dot)
         self.dot.edge(self.name, self.expr.name)
+        
+    def __call__(self):
+        return {
+            "diff_expr": self.diff_expr,
+            "python_expr": self.python_expr,
+        }
+        
+    def compute(self, differentiate):
+        if differentiate:
+            self.diff_expr = self.expr.differentiate_expr(self.arg)
+        self.python_expr = self.expr.to_python_expr()
 
 
-class DIFFARG(Base):
+class Diffarg(Base):
     def __init__(self, diffby) -> None:
         super().__init__()
         self.diffby = diffby
 
         self.dot.node(self.name, label="diff by " + self.diffby)
+        
+    def __call__(self):
+        return self.diffby
 
 
 class Exprs(Base):
@@ -77,7 +111,20 @@ class Exprs(Base):
 
         self.dot.subgraph(self.expr.dot)
         self.dot.edge(self.name, self.expr.name)
-
+        
+    def to_python_exprs(self):
+        python_exprs = []
+        if self.exprs is not None:
+            python_exprs = self.exprs.to_python_exprs()
+        python_exprs.push(self.expr.to_python_expr())
+        return python_exprs
+    
+    def differentiate_exprs(self, diffarg):
+        diff_exprs = []
+        if self.exprs is not None:
+            diff_exprs = self.exprs.differentiate_exprs(diffarg)
+        diff_exprs.push(self.expr.differentiate_expr(diffarg))
+        return diff_exprs
 
 class Expr(Base):
     def __init__(self, head, funcs) -> None:
