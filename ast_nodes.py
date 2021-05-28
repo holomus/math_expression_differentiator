@@ -74,11 +74,10 @@ class Func(Base):
         self.dot.subgraph(self.expr.dot)
         self.dot.edge(self.name, self.expr.name)
         
-    def __call__(self):
-        return {
-            "diff_expr": self.diff_expr,
-            "python_expr": self.python_expr,
-        }
+    def __call__(self, expr, diff=False):
+        if diff:
+            return self.diff_expr.replace + "*" + expr.differentiate_expr()
+        return self.diff_expr.replace
         
     def compute(self, differentiate):
         if differentiate:
@@ -162,11 +161,13 @@ class FuncOp(UnOp):
 
     def to_python_expr(self):
         if self.head in self.funcs:
-            pass
+            return self.funcs[self.head](self.expr)
         else:
             super().to_python_expr()
 
     def differentiate_expr(self, diffarg):
+        if self.head in self.funcs:
+            return self.funcs[self.head](self.expr, diff=true)
         expr_diff = self.expr.differentiate_expr(diffarg)
         if expr_diff == "0":
             return "0"
