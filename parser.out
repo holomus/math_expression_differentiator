@@ -11,59 +11,72 @@ Rule 7     optexprs -> empty
 Rule 8     optexprs -> exprs
 Rule 9     funcs -> func
 Rule 10    funcs -> func funcs
-Rule 11    func -> DEF ID ( ID ) { expr }
-Rule 12    diffarg -> { DIFF ID }
-Rule 13    exprs -> expr
-Rule 14    exprs -> { expr } exprs
-Rule 15    expr -> NUMBER
-Rule 16    expr -> ID
-Rule 17    expr -> ( expr )
-Rule 18    expr -> ID ( expr )  [precedence=right, level=5]
-Rule 19    expr -> SQRT expr  [precedence=right, level=5]
-Rule 20    expr -> EXP expr  [precedence=right, level=5]
-Rule 21    expr -> TAN expr  [precedence=right, level=5]
-Rule 22    expr -> LN expr  [precedence=right, level=5]
-Rule 23    expr -> LOG expr  [precedence=right, level=5]
-Rule 24    expr -> COS expr  [precedence=right, level=5]
-Rule 25    expr -> SIN expr  [precedence=right, level=5]
-Rule 26    expr -> PLUS expr  [precedence=right, level=3]
-Rule 27    expr -> MINUS expr  [precedence=right, level=3]
-Rule 28    expr -> expr POW expr  [precedence=left, level=4]
-Rule 29    expr -> expr DIVIDE expr  [precedence=left, level=2]
-Rule 30    expr -> expr TIMES expr  [precedence=left, level=2]
-Rule 31    expr -> expr MINUS expr  [precedence=left, level=1]
-Rule 32    expr -> expr PLUS expr  [precedence=left, level=1]
+Rule 11    func -> DEF ID ( ID ) { error }
+Rule 12    func -> DEF ID ( ID ) { expr }
+Rule 13    diffarg -> { DIFF error }
+Rule 14    diffarg -> { DIFF ID }
+Rule 15    exprs -> empty
+Rule 16    exprs -> expr
+Rule 17    exprs -> { expr } exprs
+Rule 18    expr -> NUMBER
+Rule 19    expr -> ID
+Rule 20    expr -> ( expr )
+Rule 21    expr -> ID ( error )  [precedence=right, level=5]
+Rule 22    expr -> ID ( expr )  [precedence=right, level=5]
+Rule 23    expr -> SQRT error
+Rule 24    expr -> EXP error
+Rule 25    expr -> TAN error
+Rule 26    expr -> LN error
+Rule 27    expr -> LOG error
+Rule 28    expr -> COS error
+Rule 29    expr -> SIN error
+Rule 30    expr -> SQRT expr  [precedence=right, level=5]
+Rule 31    expr -> EXP expr  [precedence=right, level=5]
+Rule 32    expr -> TAN expr  [precedence=right, level=5]
+Rule 33    expr -> LN expr  [precedence=right, level=5]
+Rule 34    expr -> LOG expr  [precedence=right, level=5]
+Rule 35    expr -> COS expr  [precedence=right, level=5]
+Rule 36    expr -> SIN expr  [precedence=right, level=5]
+Rule 37    expr -> PLUS error  [precedence=right, level=3]
+Rule 38    expr -> MINUS error  [precedence=right, level=3]
+Rule 39    expr -> PLUS expr  [precedence=right, level=3]
+Rule 40    expr -> MINUS expr  [precedence=right, level=3]
+Rule 41    expr -> expr POW expr  [precedence=left, level=4]
+Rule 42    expr -> expr DIVIDE expr  [precedence=left, level=2]
+Rule 43    expr -> expr TIMES expr  [precedence=left, level=2]
+Rule 44    expr -> expr MINUS expr  [precedence=left, level=1]
+Rule 45    expr -> expr PLUS expr  [precedence=left, level=1]
 
 Terminals, with rules where they appear:
 
-(                    : 11 17 18
-)                    : 11 17 18
-COS                  : 24
-DEF                  : 11
-DIFF                 : 12
-DIVIDE               : 29
-EXP                  : 20
-ID                   : 11 11 12 16 18
-LN                   : 22
-LOG                  : 23
-MINUS                : 27 31
-NUMBER               : 15
-PLUS                 : 26 32
-POW                  : 28
-SIN                  : 25
-SQRT                 : 19
-TAN                  : 21
-TIMES                : 30
-error                : 
-{                    : 11 12 14
-}                    : 11 12 14
+(                    : 11 12 20 21 22
+)                    : 11 12 20 21 22
+COS                  : 28 35
+DEF                  : 11 12
+DIFF                 : 13 14
+DIVIDE               : 42
+EXP                  : 24 31
+ID                   : 11 11 12 12 14 19 21 22
+LN                   : 26 33
+LOG                  : 27 34
+MINUS                : 38 40 44
+NUMBER               : 18
+PLUS                 : 37 39 45
+POW                  : 41
+SIN                  : 29 36
+SQRT                 : 23 30
+TAN                  : 25 32
+TIMES                : 43
+error                : 11 13 21 23 24 25 26 27 28 29 37 38
+{                    : 11 12 13 14 17
+}                    : 11 12 13 14 17
 
 Nonterminals, with rules where they appear:
 
 diffarg              : 6
-empty                : 3 5 7
-expr                 : 11 13 14 17 18 19 20 21 22 23 24 25 26 27 28 28 29 29 30 30 31 31 32 32
-exprs                : 8 14
+empty                : 3 5 7 15
+expr                 : 12 16 17 20 22 30 31 32 33 34 35 36 39 40 41 41 42 42 43 43 44 44 45 45
+exprs                : 8 17
 func                 : 9 10
 funcs                : 4 10
 optdiffarg           : 1
@@ -81,7 +94,8 @@ state 0
     (2) empty -> .
     (9) funcs -> . func
     (10) funcs -> . func funcs
-    (11) func -> . DEF ID ( ID ) { expr }
+    (11) func -> . DEF ID ( ID ) { error }
+    (12) func -> . DEF ID ( ID ) { expr }
     {               reduce using rule 2 (empty -> .)
     NUMBER          reduce using rule 2 (empty -> .)
     ID              reduce using rule 2 (empty -> .)
@@ -115,7 +129,8 @@ state 2
     (5) optdiffarg -> . empty
     (6) optdiffarg -> . diffarg
     (2) empty -> .
-    (12) diffarg -> . { DIFF ID }
+    (13) diffarg -> . { DIFF error }
+    (14) diffarg -> . { DIFF ID }
   ! shift/reduce conflict for { resolved as shift
     NUMBER          reduce using rule 2 (empty -> .)
     ID              reduce using rule 2 (empty -> .)
@@ -180,7 +195,8 @@ state 5
     (10) funcs -> func . funcs
     (9) funcs -> . func
     (10) funcs -> . func funcs
-    (11) func -> . DEF ID ( ID ) { expr }
+    (11) func -> . DEF ID ( ID ) { error }
+    (12) func -> . DEF ID ( ID ) { expr }
     {               reduce using rule 9 (funcs -> func .)
     NUMBER          reduce using rule 9 (funcs -> func .)
     ID              reduce using rule 9 (funcs -> func .)
@@ -202,7 +218,8 @@ state 5
 
 state 6
 
-    (11) func -> DEF . ID ( ID ) { expr }
+    (11) func -> DEF . ID ( ID ) { error }
+    (12) func -> DEF . ID ( ID ) { expr }
     ID              shift and go to state 12
 
 
@@ -212,26 +229,37 @@ state 7
     (7) optexprs -> . empty
     (8) optexprs -> . exprs
     (2) empty -> .
-    (13) exprs -> . expr
-    (14) exprs -> . { expr } exprs
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (15) exprs -> . empty
+    (16) exprs -> . expr
+    (17) exprs -> . { expr } exprs
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
     $end            reduce using rule 2 (empty -> .)
     {               shift and go to state 17
     NUMBER          shift and go to state 18
@@ -292,7 +320,8 @@ state 9
 
 state 10
 
-    (12) diffarg -> { . DIFF ID }
+    (13) diffarg -> { . DIFF error }
+    (14) diffarg -> { . DIFF ID }
     DIFF            shift and go to state 30
 
 
@@ -317,7 +346,8 @@ state 11
 
 state 12
 
-    (11) func -> DEF ID . ( ID ) { expr }
+    (11) func -> DEF ID . ( ID ) { error }
+    (12) func -> DEF ID . ( ID ) { expr }
     (               shift and go to state 31
 
 
@@ -330,6 +360,8 @@ state 13
 state 14
 
     (7) optexprs -> empty .
+    (15) exprs -> empty .
+  ! reduce/reduce conflict for $end resolved using rule 7 (optexprs -> empty .)
     $end            reduce using rule 7 (optexprs -> empty .)
 
 
@@ -341,13 +373,13 @@ state 15
 
 state 16
 
-    (13) exprs -> expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    $end            reduce using rule 13 (exprs -> expr .)
+    (16) exprs -> expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    $end            reduce using rule 16 (exprs -> expr .)
     POW             shift and go to state 32
     DIVIDE          shift and go to state 33
     TIMES           shift and go to state 34
@@ -357,25 +389,35 @@ state 16
 
 state 17
 
-    (14) exprs -> { . expr } exprs
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (17) exprs -> { . expr } exprs
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -393,53 +435,64 @@ state 17
 
 state 18
 
-    (15) expr -> NUMBER .
-    POW             reduce using rule 15 (expr -> NUMBER .)
-    DIVIDE          reduce using rule 15 (expr -> NUMBER .)
-    TIMES           reduce using rule 15 (expr -> NUMBER .)
-    MINUS           reduce using rule 15 (expr -> NUMBER .)
-    PLUS            reduce using rule 15 (expr -> NUMBER .)
-    $end            reduce using rule 15 (expr -> NUMBER .)
-    }               reduce using rule 15 (expr -> NUMBER .)
-    )               reduce using rule 15 (expr -> NUMBER .)
+    (18) expr -> NUMBER .
+    POW             reduce using rule 18 (expr -> NUMBER .)
+    DIVIDE          reduce using rule 18 (expr -> NUMBER .)
+    TIMES           reduce using rule 18 (expr -> NUMBER .)
+    MINUS           reduce using rule 18 (expr -> NUMBER .)
+    PLUS            reduce using rule 18 (expr -> NUMBER .)
+    $end            reduce using rule 18 (expr -> NUMBER .)
+    }               reduce using rule 18 (expr -> NUMBER .)
+    )               reduce using rule 18 (expr -> NUMBER .)
 
 
 state 19
 
-    (16) expr -> ID .
-    (18) expr -> ID . ( expr )
-    POW             reduce using rule 16 (expr -> ID .)
-    DIVIDE          reduce using rule 16 (expr -> ID .)
-    TIMES           reduce using rule 16 (expr -> ID .)
-    MINUS           reduce using rule 16 (expr -> ID .)
-    PLUS            reduce using rule 16 (expr -> ID .)
-    $end            reduce using rule 16 (expr -> ID .)
-    }               reduce using rule 16 (expr -> ID .)
-    )               reduce using rule 16 (expr -> ID .)
+    (19) expr -> ID .
+    (21) expr -> ID . ( error )
+    (22) expr -> ID . ( expr )
+    POW             reduce using rule 19 (expr -> ID .)
+    DIVIDE          reduce using rule 19 (expr -> ID .)
+    TIMES           reduce using rule 19 (expr -> ID .)
+    MINUS           reduce using rule 19 (expr -> ID .)
+    PLUS            reduce using rule 19 (expr -> ID .)
+    $end            reduce using rule 19 (expr -> ID .)
+    }               reduce using rule 19 (expr -> ID .)
+    )               reduce using rule 19 (expr -> ID .)
     (               shift and go to state 38
 
 
 state 20
 
-    (17) expr -> ( . expr )
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (20) expr -> ( . expr )
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -457,61 +510,37 @@ state 20
 
 state 21
 
-    (19) expr -> SQRT . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 40
-
-state 22
-
-    (20) expr -> EXP . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (23) expr -> SQRT . error
+    (30) expr -> SQRT . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 40
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -527,63 +556,39 @@ state 22
 
     expr                           shift and go to state 41
 
-state 23
+state 22
 
-    (21) expr -> TAN . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 42
-
-state 24
-
-    (22) expr -> LN . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (24) expr -> EXP . error
+    (31) expr -> EXP . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 42
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -599,63 +604,39 @@ state 24
 
     expr                           shift and go to state 43
 
-state 25
+state 23
 
-    (23) expr -> LOG . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 44
-
-state 26
-
-    (24) expr -> COS . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (25) expr -> TAN . error
+    (32) expr -> TAN . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 44
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -671,63 +652,39 @@ state 26
 
     expr                           shift and go to state 45
 
-state 27
+state 24
 
-    (25) expr -> SIN . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 46
-
-state 28
-
-    (26) expr -> PLUS . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (26) expr -> LN . error
+    (33) expr -> LN . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 46
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -743,27 +700,39 @@ state 28
 
     expr                           shift and go to state 47
 
-state 29
+state 25
 
-    (27) expr -> MINUS . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (27) expr -> LOG . error
+    (34) expr -> LOG . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 48
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -777,41 +746,41 @@ state 29
     PLUS            shift and go to state 28
     MINUS           shift and go to state 29
 
-    expr                           shift and go to state 48
+    expr                           shift and go to state 49
 
-state 30
+state 26
 
-    (12) diffarg -> { DIFF . ID }
-    ID              shift and go to state 49
-
-
-state 31
-
-    (11) func -> DEF ID ( . ID ) { expr }
-    ID              shift and go to state 50
-
-
-state 32
-
-    (28) expr -> expr POW . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (28) expr -> COS . error
+    (35) expr -> COS . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 50
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -827,63 +796,39 @@ state 32
 
     expr                           shift and go to state 51
 
-state 33
+state 27
 
-    (29) expr -> expr DIVIDE . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 52
-
-state 34
-
-    (30) expr -> expr TIMES . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (29) expr -> SIN . error
+    (36) expr -> SIN . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 52
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -899,63 +844,39 @@ state 34
 
     expr                           shift and go to state 53
 
-state 35
+state 28
 
-    (31) expr -> expr MINUS . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    NUMBER          shift and go to state 18
-    ID              shift and go to state 19
-    (               shift and go to state 20
-    SQRT            shift and go to state 21
-    EXP             shift and go to state 22
-    TAN             shift and go to state 23
-    LN              shift and go to state 24
-    LOG             shift and go to state 25
-    COS             shift and go to state 26
-    SIN             shift and go to state 27
-    PLUS            shift and go to state 28
-    MINUS           shift and go to state 29
-
-    expr                           shift and go to state 54
-
-state 36
-
-    (32) expr -> expr PLUS . expr
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (37) expr -> PLUS . error
+    (39) expr -> PLUS . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 54
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -971,43 +892,39 @@ state 36
 
     expr                           shift and go to state 55
 
-state 37
+state 29
 
-    (14) exprs -> { expr . } exprs
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    }               shift and go to state 56
-    POW             shift and go to state 32
-    DIVIDE          shift and go to state 33
-    TIMES           shift and go to state 34
-    MINUS           shift and go to state 35
-    PLUS            shift and go to state 36
-
-
-state 38
-
-    (18) expr -> ID ( . expr )
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (38) expr -> MINUS . error
+    (40) expr -> MINUS . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 56
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -1023,310 +940,52 @@ state 38
 
     expr                           shift and go to state 57
 
-state 39
+state 30
 
-    (17) expr -> ( expr . )
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    )               shift and go to state 58
-    POW             shift and go to state 32
-    DIVIDE          shift and go to state 33
-    TIMES           shift and go to state 34
-    MINUS           shift and go to state 35
-    PLUS            shift and go to state 36
+    (13) diffarg -> { DIFF . error }
+    (14) diffarg -> { DIFF . ID }
+    error           shift and go to state 58
+    ID              shift and go to state 59
 
 
-state 40
+state 31
 
-    (19) expr -> SQRT expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 19 (expr -> SQRT expr .)
-    DIVIDE          reduce using rule 19 (expr -> SQRT expr .)
-    TIMES           reduce using rule 19 (expr -> SQRT expr .)
-    MINUS           reduce using rule 19 (expr -> SQRT expr .)
-    PLUS            reduce using rule 19 (expr -> SQRT expr .)
-    $end            reduce using rule 19 (expr -> SQRT expr .)
-    }               reduce using rule 19 (expr -> SQRT expr .)
-    )               reduce using rule 19 (expr -> SQRT expr .)
+    (11) func -> DEF ID ( . ID ) { error }
+    (12) func -> DEF ID ( . ID ) { expr }
+    ID              shift and go to state 60
 
 
-state 41
+state 32
 
-    (20) expr -> EXP expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 20 (expr -> EXP expr .)
-    DIVIDE          reduce using rule 20 (expr -> EXP expr .)
-    TIMES           reduce using rule 20 (expr -> EXP expr .)
-    MINUS           reduce using rule 20 (expr -> EXP expr .)
-    PLUS            reduce using rule 20 (expr -> EXP expr .)
-    $end            reduce using rule 20 (expr -> EXP expr .)
-    }               reduce using rule 20 (expr -> EXP expr .)
-    )               reduce using rule 20 (expr -> EXP expr .)
-
-
-state 42
-
-    (21) expr -> TAN expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 21 (expr -> TAN expr .)
-    DIVIDE          reduce using rule 21 (expr -> TAN expr .)
-    TIMES           reduce using rule 21 (expr -> TAN expr .)
-    MINUS           reduce using rule 21 (expr -> TAN expr .)
-    PLUS            reduce using rule 21 (expr -> TAN expr .)
-    $end            reduce using rule 21 (expr -> TAN expr .)
-    }               reduce using rule 21 (expr -> TAN expr .)
-    )               reduce using rule 21 (expr -> TAN expr .)
-
-
-state 43
-
-    (22) expr -> LN expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 22 (expr -> LN expr .)
-    DIVIDE          reduce using rule 22 (expr -> LN expr .)
-    TIMES           reduce using rule 22 (expr -> LN expr .)
-    MINUS           reduce using rule 22 (expr -> LN expr .)
-    PLUS            reduce using rule 22 (expr -> LN expr .)
-    $end            reduce using rule 22 (expr -> LN expr .)
-    }               reduce using rule 22 (expr -> LN expr .)
-    )               reduce using rule 22 (expr -> LN expr .)
-
-
-state 44
-
-    (23) expr -> LOG expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 23 (expr -> LOG expr .)
-    DIVIDE          reduce using rule 23 (expr -> LOG expr .)
-    TIMES           reduce using rule 23 (expr -> LOG expr .)
-    MINUS           reduce using rule 23 (expr -> LOG expr .)
-    PLUS            reduce using rule 23 (expr -> LOG expr .)
-    $end            reduce using rule 23 (expr -> LOG expr .)
-    }               reduce using rule 23 (expr -> LOG expr .)
-    )               reduce using rule 23 (expr -> LOG expr .)
-
-
-state 45
-
-    (24) expr -> COS expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 24 (expr -> COS expr .)
-    DIVIDE          reduce using rule 24 (expr -> COS expr .)
-    TIMES           reduce using rule 24 (expr -> COS expr .)
-    MINUS           reduce using rule 24 (expr -> COS expr .)
-    PLUS            reduce using rule 24 (expr -> COS expr .)
-    $end            reduce using rule 24 (expr -> COS expr .)
-    }               reduce using rule 24 (expr -> COS expr .)
-    )               reduce using rule 24 (expr -> COS expr .)
-
-
-state 46
-
-    (25) expr -> SIN expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 25 (expr -> SIN expr .)
-    DIVIDE          reduce using rule 25 (expr -> SIN expr .)
-    TIMES           reduce using rule 25 (expr -> SIN expr .)
-    MINUS           reduce using rule 25 (expr -> SIN expr .)
-    PLUS            reduce using rule 25 (expr -> SIN expr .)
-    $end            reduce using rule 25 (expr -> SIN expr .)
-    }               reduce using rule 25 (expr -> SIN expr .)
-    )               reduce using rule 25 (expr -> SIN expr .)
-
-
-state 47
-
-    (26) expr -> PLUS expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    DIVIDE          reduce using rule 26 (expr -> PLUS expr .)
-    TIMES           reduce using rule 26 (expr -> PLUS expr .)
-    MINUS           reduce using rule 26 (expr -> PLUS expr .)
-    PLUS            reduce using rule 26 (expr -> PLUS expr .)
-    $end            reduce using rule 26 (expr -> PLUS expr .)
-    }               reduce using rule 26 (expr -> PLUS expr .)
-    )               reduce using rule 26 (expr -> PLUS expr .)
-    POW             shift and go to state 32
-
-
-state 48
-
-    (27) expr -> MINUS expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    DIVIDE          reduce using rule 27 (expr -> MINUS expr .)
-    TIMES           reduce using rule 27 (expr -> MINUS expr .)
-    MINUS           reduce using rule 27 (expr -> MINUS expr .)
-    PLUS            reduce using rule 27 (expr -> MINUS expr .)
-    $end            reduce using rule 27 (expr -> MINUS expr .)
-    }               reduce using rule 27 (expr -> MINUS expr .)
-    )               reduce using rule 27 (expr -> MINUS expr .)
-    POW             shift and go to state 32
-
-
-state 49
-
-    (12) diffarg -> { DIFF ID . }
-    }               shift and go to state 59
-
-
-state 50
-
-    (11) func -> DEF ID ( ID . ) { expr }
-    )               shift and go to state 60
-
-
-state 51
-
-    (28) expr -> expr POW expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    POW             reduce using rule 28 (expr -> expr POW expr .)
-    DIVIDE          reduce using rule 28 (expr -> expr POW expr .)
-    TIMES           reduce using rule 28 (expr -> expr POW expr .)
-    MINUS           reduce using rule 28 (expr -> expr POW expr .)
-    PLUS            reduce using rule 28 (expr -> expr POW expr .)
-    $end            reduce using rule 28 (expr -> expr POW expr .)
-    }               reduce using rule 28 (expr -> expr POW expr .)
-    )               reduce using rule 28 (expr -> expr POW expr .)
-
-
-state 52
-
-    (29) expr -> expr DIVIDE expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    DIVIDE          reduce using rule 29 (expr -> expr DIVIDE expr .)
-    TIMES           reduce using rule 29 (expr -> expr DIVIDE expr .)
-    MINUS           reduce using rule 29 (expr -> expr DIVIDE expr .)
-    PLUS            reduce using rule 29 (expr -> expr DIVIDE expr .)
-    $end            reduce using rule 29 (expr -> expr DIVIDE expr .)
-    }               reduce using rule 29 (expr -> expr DIVIDE expr .)
-    )               reduce using rule 29 (expr -> expr DIVIDE expr .)
-    POW             shift and go to state 32
-
-
-state 53
-
-    (30) expr -> expr TIMES expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    DIVIDE          reduce using rule 30 (expr -> expr TIMES expr .)
-    TIMES           reduce using rule 30 (expr -> expr TIMES expr .)
-    MINUS           reduce using rule 30 (expr -> expr TIMES expr .)
-    PLUS            reduce using rule 30 (expr -> expr TIMES expr .)
-    $end            reduce using rule 30 (expr -> expr TIMES expr .)
-    }               reduce using rule 30 (expr -> expr TIMES expr .)
-    )               reduce using rule 30 (expr -> expr TIMES expr .)
-    POW             shift and go to state 32
-
-
-state 54
-
-    (31) expr -> expr MINUS expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    MINUS           reduce using rule 31 (expr -> expr MINUS expr .)
-    PLUS            reduce using rule 31 (expr -> expr MINUS expr .)
-    $end            reduce using rule 31 (expr -> expr MINUS expr .)
-    }               reduce using rule 31 (expr -> expr MINUS expr .)
-    )               reduce using rule 31 (expr -> expr MINUS expr .)
-    POW             shift and go to state 32
-    DIVIDE          shift and go to state 33
-    TIMES           shift and go to state 34
-
-
-state 55
-
-    (32) expr -> expr PLUS expr .
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    MINUS           reduce using rule 32 (expr -> expr PLUS expr .)
-    PLUS            reduce using rule 32 (expr -> expr PLUS expr .)
-    $end            reduce using rule 32 (expr -> expr PLUS expr .)
-    }               reduce using rule 32 (expr -> expr PLUS expr .)
-    )               reduce using rule 32 (expr -> expr PLUS expr .)
-    POW             shift and go to state 32
-    DIVIDE          shift and go to state 33
-    TIMES           shift and go to state 34
-
-
-state 56
-
-    (14) exprs -> { expr } . exprs
-    (13) exprs -> . expr
-    (14) exprs -> . { expr } exprs
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
-    {               shift and go to state 17
+    (41) expr -> expr POW . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -1340,103 +999,131 @@ state 56
     PLUS            shift and go to state 28
     MINUS           shift and go to state 29
 
-    expr                           shift and go to state 16
-    exprs                          shift and go to state 61
+    expr                           shift and go to state 61
 
-state 57
+state 33
 
-    (18) expr -> ID ( expr . )
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    )               shift and go to state 62
-    POW             shift and go to state 32
-    DIVIDE          shift and go to state 33
-    TIMES           shift and go to state 34
-    MINUS           shift and go to state 35
-    PLUS            shift and go to state 36
+    (42) expr -> expr DIVIDE . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
 
+    expr                           shift and go to state 62
 
-state 58
+state 34
 
-    (17) expr -> ( expr ) .
-    POW             reduce using rule 17 (expr -> ( expr ) .)
-    DIVIDE          reduce using rule 17 (expr -> ( expr ) .)
-    TIMES           reduce using rule 17 (expr -> ( expr ) .)
-    MINUS           reduce using rule 17 (expr -> ( expr ) .)
-    PLUS            reduce using rule 17 (expr -> ( expr ) .)
-    $end            reduce using rule 17 (expr -> ( expr ) .)
-    }               reduce using rule 17 (expr -> ( expr ) .)
-    )               reduce using rule 17 (expr -> ( expr ) .)
+    (43) expr -> expr TIMES . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
 
+    expr                           shift and go to state 63
 
-state 59
+state 35
 
-    (12) diffarg -> { DIFF ID } .
-    {               reduce using rule 12 (diffarg -> { DIFF ID } .)
-    NUMBER          reduce using rule 12 (diffarg -> { DIFF ID } .)
-    ID              reduce using rule 12 (diffarg -> { DIFF ID } .)
-    (               reduce using rule 12 (diffarg -> { DIFF ID } .)
-    SQRT            reduce using rule 12 (diffarg -> { DIFF ID } .)
-    EXP             reduce using rule 12 (diffarg -> { DIFF ID } .)
-    TAN             reduce using rule 12 (diffarg -> { DIFF ID } .)
-    LN              reduce using rule 12 (diffarg -> { DIFF ID } .)
-    LOG             reduce using rule 12 (diffarg -> { DIFF ID } .)
-    COS             reduce using rule 12 (diffarg -> { DIFF ID } .)
-    SIN             reduce using rule 12 (diffarg -> { DIFF ID } .)
-    PLUS            reduce using rule 12 (diffarg -> { DIFF ID } .)
-    MINUS           reduce using rule 12 (diffarg -> { DIFF ID } .)
-    $end            reduce using rule 12 (diffarg -> { DIFF ID } .)
-
-
-state 60
-
-    (11) func -> DEF ID ( ID ) . { expr }
-    {               shift and go to state 63
-
-
-state 61
-
-    (14) exprs -> { expr } exprs .
-    $end            reduce using rule 14 (exprs -> { expr } exprs .)
-
-
-state 62
-
-    (18) expr -> ID ( expr ) .
-    POW             reduce using rule 18 (expr -> ID ( expr ) .)
-    DIVIDE          reduce using rule 18 (expr -> ID ( expr ) .)
-    TIMES           reduce using rule 18 (expr -> ID ( expr ) .)
-    MINUS           reduce using rule 18 (expr -> ID ( expr ) .)
-    PLUS            reduce using rule 18 (expr -> ID ( expr ) .)
-    $end            reduce using rule 18 (expr -> ID ( expr ) .)
-    }               reduce using rule 18 (expr -> ID ( expr ) .)
-    )               reduce using rule 18 (expr -> ID ( expr ) .)
-
-
-state 63
-
-    (11) func -> DEF ID ( ID ) { . expr }
-    (15) expr -> . NUMBER
-    (16) expr -> . ID
-    (17) expr -> . ( expr )
-    (18) expr -> . ID ( expr )
-    (19) expr -> . SQRT expr
-    (20) expr -> . EXP expr
-    (21) expr -> . TAN expr
-    (22) expr -> . LN expr
-    (23) expr -> . LOG expr
-    (24) expr -> . COS expr
-    (25) expr -> . SIN expr
-    (26) expr -> . PLUS expr
-    (27) expr -> . MINUS expr
-    (28) expr -> . expr POW expr
-    (29) expr -> . expr DIVIDE expr
-    (30) expr -> . expr TIMES expr
-    (31) expr -> . expr MINUS expr
-    (32) expr -> . expr PLUS expr
+    (44) expr -> expr MINUS . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
     NUMBER          shift and go to state 18
     ID              shift and go to state 19
     (               shift and go to state 20
@@ -1452,15 +1139,61 @@ state 63
 
     expr                           shift and go to state 64
 
-state 64
+state 36
 
-    (11) func -> DEF ID ( ID ) { expr . }
-    (28) expr -> expr . POW expr
-    (29) expr -> expr . DIVIDE expr
-    (30) expr -> expr . TIMES expr
-    (31) expr -> expr . MINUS expr
-    (32) expr -> expr . PLUS expr
-    }               shift and go to state 65
+    (45) expr -> expr PLUS . expr
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
+
+    expr                           shift and go to state 65
+
+state 37
+
+    (17) exprs -> { expr . } exprs
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    }               shift and go to state 66
     POW             shift and go to state 32
     DIVIDE          shift and go to state 33
     TIMES           shift and go to state 34
@@ -1468,26 +1201,742 @@ state 64
     PLUS            shift and go to state 36
 
 
+state 38
+
+    (21) expr -> ID ( . error )
+    (22) expr -> ID ( . expr )
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 67
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
+
+    expr                           shift and go to state 68
+
+state 39
+
+    (20) expr -> ( expr . )
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    )               shift and go to state 69
+    POW             shift and go to state 32
+    DIVIDE          shift and go to state 33
+    TIMES           shift and go to state 34
+    MINUS           shift and go to state 35
+    PLUS            shift and go to state 36
+
+
+state 40
+
+    (23) expr -> SQRT error .
+    POW             reduce using rule 23 (expr -> SQRT error .)
+    DIVIDE          reduce using rule 23 (expr -> SQRT error .)
+    TIMES           reduce using rule 23 (expr -> SQRT error .)
+    MINUS           reduce using rule 23 (expr -> SQRT error .)
+    PLUS            reduce using rule 23 (expr -> SQRT error .)
+    $end            reduce using rule 23 (expr -> SQRT error .)
+    }               reduce using rule 23 (expr -> SQRT error .)
+    )               reduce using rule 23 (expr -> SQRT error .)
+
+
+state 41
+
+    (30) expr -> SQRT expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 30 (expr -> SQRT expr .)
+    DIVIDE          reduce using rule 30 (expr -> SQRT expr .)
+    TIMES           reduce using rule 30 (expr -> SQRT expr .)
+    MINUS           reduce using rule 30 (expr -> SQRT expr .)
+    PLUS            reduce using rule 30 (expr -> SQRT expr .)
+    $end            reduce using rule 30 (expr -> SQRT expr .)
+    }               reduce using rule 30 (expr -> SQRT expr .)
+    )               reduce using rule 30 (expr -> SQRT expr .)
+
+
+state 42
+
+    (24) expr -> EXP error .
+    POW             reduce using rule 24 (expr -> EXP error .)
+    DIVIDE          reduce using rule 24 (expr -> EXP error .)
+    TIMES           reduce using rule 24 (expr -> EXP error .)
+    MINUS           reduce using rule 24 (expr -> EXP error .)
+    PLUS            reduce using rule 24 (expr -> EXP error .)
+    $end            reduce using rule 24 (expr -> EXP error .)
+    }               reduce using rule 24 (expr -> EXP error .)
+    )               reduce using rule 24 (expr -> EXP error .)
+
+
+state 43
+
+    (31) expr -> EXP expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 31 (expr -> EXP expr .)
+    DIVIDE          reduce using rule 31 (expr -> EXP expr .)
+    TIMES           reduce using rule 31 (expr -> EXP expr .)
+    MINUS           reduce using rule 31 (expr -> EXP expr .)
+    PLUS            reduce using rule 31 (expr -> EXP expr .)
+    $end            reduce using rule 31 (expr -> EXP expr .)
+    }               reduce using rule 31 (expr -> EXP expr .)
+    )               reduce using rule 31 (expr -> EXP expr .)
+
+
+state 44
+
+    (25) expr -> TAN error .
+    POW             reduce using rule 25 (expr -> TAN error .)
+    DIVIDE          reduce using rule 25 (expr -> TAN error .)
+    TIMES           reduce using rule 25 (expr -> TAN error .)
+    MINUS           reduce using rule 25 (expr -> TAN error .)
+    PLUS            reduce using rule 25 (expr -> TAN error .)
+    $end            reduce using rule 25 (expr -> TAN error .)
+    }               reduce using rule 25 (expr -> TAN error .)
+    )               reduce using rule 25 (expr -> TAN error .)
+
+
+state 45
+
+    (32) expr -> TAN expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 32 (expr -> TAN expr .)
+    DIVIDE          reduce using rule 32 (expr -> TAN expr .)
+    TIMES           reduce using rule 32 (expr -> TAN expr .)
+    MINUS           reduce using rule 32 (expr -> TAN expr .)
+    PLUS            reduce using rule 32 (expr -> TAN expr .)
+    $end            reduce using rule 32 (expr -> TAN expr .)
+    }               reduce using rule 32 (expr -> TAN expr .)
+    )               reduce using rule 32 (expr -> TAN expr .)
+
+
+state 46
+
+    (26) expr -> LN error .
+    POW             reduce using rule 26 (expr -> LN error .)
+    DIVIDE          reduce using rule 26 (expr -> LN error .)
+    TIMES           reduce using rule 26 (expr -> LN error .)
+    MINUS           reduce using rule 26 (expr -> LN error .)
+    PLUS            reduce using rule 26 (expr -> LN error .)
+    $end            reduce using rule 26 (expr -> LN error .)
+    }               reduce using rule 26 (expr -> LN error .)
+    )               reduce using rule 26 (expr -> LN error .)
+
+
+state 47
+
+    (33) expr -> LN expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 33 (expr -> LN expr .)
+    DIVIDE          reduce using rule 33 (expr -> LN expr .)
+    TIMES           reduce using rule 33 (expr -> LN expr .)
+    MINUS           reduce using rule 33 (expr -> LN expr .)
+    PLUS            reduce using rule 33 (expr -> LN expr .)
+    $end            reduce using rule 33 (expr -> LN expr .)
+    }               reduce using rule 33 (expr -> LN expr .)
+    )               reduce using rule 33 (expr -> LN expr .)
+
+
+state 48
+
+    (27) expr -> LOG error .
+    POW             reduce using rule 27 (expr -> LOG error .)
+    DIVIDE          reduce using rule 27 (expr -> LOG error .)
+    TIMES           reduce using rule 27 (expr -> LOG error .)
+    MINUS           reduce using rule 27 (expr -> LOG error .)
+    PLUS            reduce using rule 27 (expr -> LOG error .)
+    $end            reduce using rule 27 (expr -> LOG error .)
+    }               reduce using rule 27 (expr -> LOG error .)
+    )               reduce using rule 27 (expr -> LOG error .)
+
+
+state 49
+
+    (34) expr -> LOG expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 34 (expr -> LOG expr .)
+    DIVIDE          reduce using rule 34 (expr -> LOG expr .)
+    TIMES           reduce using rule 34 (expr -> LOG expr .)
+    MINUS           reduce using rule 34 (expr -> LOG expr .)
+    PLUS            reduce using rule 34 (expr -> LOG expr .)
+    $end            reduce using rule 34 (expr -> LOG expr .)
+    }               reduce using rule 34 (expr -> LOG expr .)
+    )               reduce using rule 34 (expr -> LOG expr .)
+
+
+state 50
+
+    (28) expr -> COS error .
+    POW             reduce using rule 28 (expr -> COS error .)
+    DIVIDE          reduce using rule 28 (expr -> COS error .)
+    TIMES           reduce using rule 28 (expr -> COS error .)
+    MINUS           reduce using rule 28 (expr -> COS error .)
+    PLUS            reduce using rule 28 (expr -> COS error .)
+    $end            reduce using rule 28 (expr -> COS error .)
+    }               reduce using rule 28 (expr -> COS error .)
+    )               reduce using rule 28 (expr -> COS error .)
+
+
+state 51
+
+    (35) expr -> COS expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 35 (expr -> COS expr .)
+    DIVIDE          reduce using rule 35 (expr -> COS expr .)
+    TIMES           reduce using rule 35 (expr -> COS expr .)
+    MINUS           reduce using rule 35 (expr -> COS expr .)
+    PLUS            reduce using rule 35 (expr -> COS expr .)
+    $end            reduce using rule 35 (expr -> COS expr .)
+    }               reduce using rule 35 (expr -> COS expr .)
+    )               reduce using rule 35 (expr -> COS expr .)
+
+
+state 52
+
+    (29) expr -> SIN error .
+    POW             reduce using rule 29 (expr -> SIN error .)
+    DIVIDE          reduce using rule 29 (expr -> SIN error .)
+    TIMES           reduce using rule 29 (expr -> SIN error .)
+    MINUS           reduce using rule 29 (expr -> SIN error .)
+    PLUS            reduce using rule 29 (expr -> SIN error .)
+    $end            reduce using rule 29 (expr -> SIN error .)
+    }               reduce using rule 29 (expr -> SIN error .)
+    )               reduce using rule 29 (expr -> SIN error .)
+
+
+state 53
+
+    (36) expr -> SIN expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 36 (expr -> SIN expr .)
+    DIVIDE          reduce using rule 36 (expr -> SIN expr .)
+    TIMES           reduce using rule 36 (expr -> SIN expr .)
+    MINUS           reduce using rule 36 (expr -> SIN expr .)
+    PLUS            reduce using rule 36 (expr -> SIN expr .)
+    $end            reduce using rule 36 (expr -> SIN expr .)
+    }               reduce using rule 36 (expr -> SIN expr .)
+    )               reduce using rule 36 (expr -> SIN expr .)
+
+
+state 54
+
+    (37) expr -> PLUS error .
+    POW             reduce using rule 37 (expr -> PLUS error .)
+    DIVIDE          reduce using rule 37 (expr -> PLUS error .)
+    TIMES           reduce using rule 37 (expr -> PLUS error .)
+    MINUS           reduce using rule 37 (expr -> PLUS error .)
+    PLUS            reduce using rule 37 (expr -> PLUS error .)
+    $end            reduce using rule 37 (expr -> PLUS error .)
+    }               reduce using rule 37 (expr -> PLUS error .)
+    )               reduce using rule 37 (expr -> PLUS error .)
+
+
+state 55
+
+    (39) expr -> PLUS expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    DIVIDE          reduce using rule 39 (expr -> PLUS expr .)
+    TIMES           reduce using rule 39 (expr -> PLUS expr .)
+    MINUS           reduce using rule 39 (expr -> PLUS expr .)
+    PLUS            reduce using rule 39 (expr -> PLUS expr .)
+    $end            reduce using rule 39 (expr -> PLUS expr .)
+    }               reduce using rule 39 (expr -> PLUS expr .)
+    )               reduce using rule 39 (expr -> PLUS expr .)
+    POW             shift and go to state 32
+
+
+state 56
+
+    (38) expr -> MINUS error .
+    POW             reduce using rule 38 (expr -> MINUS error .)
+    DIVIDE          reduce using rule 38 (expr -> MINUS error .)
+    TIMES           reduce using rule 38 (expr -> MINUS error .)
+    MINUS           reduce using rule 38 (expr -> MINUS error .)
+    PLUS            reduce using rule 38 (expr -> MINUS error .)
+    $end            reduce using rule 38 (expr -> MINUS error .)
+    }               reduce using rule 38 (expr -> MINUS error .)
+    )               reduce using rule 38 (expr -> MINUS error .)
+
+
+state 57
+
+    (40) expr -> MINUS expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    DIVIDE          reduce using rule 40 (expr -> MINUS expr .)
+    TIMES           reduce using rule 40 (expr -> MINUS expr .)
+    MINUS           reduce using rule 40 (expr -> MINUS expr .)
+    PLUS            reduce using rule 40 (expr -> MINUS expr .)
+    $end            reduce using rule 40 (expr -> MINUS expr .)
+    }               reduce using rule 40 (expr -> MINUS expr .)
+    )               reduce using rule 40 (expr -> MINUS expr .)
+    POW             shift and go to state 32
+
+
+state 58
+
+    (13) diffarg -> { DIFF error . }
+    }               shift and go to state 70
+
+
+state 59
+
+    (14) diffarg -> { DIFF ID . }
+    }               shift and go to state 71
+
+
+state 60
+
+    (11) func -> DEF ID ( ID . ) { error }
+    (12) func -> DEF ID ( ID . ) { expr }
+    )               shift and go to state 72
+
+
+state 61
+
+    (41) expr -> expr POW expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    POW             reduce using rule 41 (expr -> expr POW expr .)
+    DIVIDE          reduce using rule 41 (expr -> expr POW expr .)
+    TIMES           reduce using rule 41 (expr -> expr POW expr .)
+    MINUS           reduce using rule 41 (expr -> expr POW expr .)
+    PLUS            reduce using rule 41 (expr -> expr POW expr .)
+    $end            reduce using rule 41 (expr -> expr POW expr .)
+    }               reduce using rule 41 (expr -> expr POW expr .)
+    )               reduce using rule 41 (expr -> expr POW expr .)
+
+
+state 62
+
+    (42) expr -> expr DIVIDE expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    DIVIDE          reduce using rule 42 (expr -> expr DIVIDE expr .)
+    TIMES           reduce using rule 42 (expr -> expr DIVIDE expr .)
+    MINUS           reduce using rule 42 (expr -> expr DIVIDE expr .)
+    PLUS            reduce using rule 42 (expr -> expr DIVIDE expr .)
+    $end            reduce using rule 42 (expr -> expr DIVIDE expr .)
+    }               reduce using rule 42 (expr -> expr DIVIDE expr .)
+    )               reduce using rule 42 (expr -> expr DIVIDE expr .)
+    POW             shift and go to state 32
+
+
+state 63
+
+    (43) expr -> expr TIMES expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    DIVIDE          reduce using rule 43 (expr -> expr TIMES expr .)
+    TIMES           reduce using rule 43 (expr -> expr TIMES expr .)
+    MINUS           reduce using rule 43 (expr -> expr TIMES expr .)
+    PLUS            reduce using rule 43 (expr -> expr TIMES expr .)
+    $end            reduce using rule 43 (expr -> expr TIMES expr .)
+    }               reduce using rule 43 (expr -> expr TIMES expr .)
+    )               reduce using rule 43 (expr -> expr TIMES expr .)
+    POW             shift and go to state 32
+
+
+state 64
+
+    (44) expr -> expr MINUS expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    MINUS           reduce using rule 44 (expr -> expr MINUS expr .)
+    PLUS            reduce using rule 44 (expr -> expr MINUS expr .)
+    $end            reduce using rule 44 (expr -> expr MINUS expr .)
+    }               reduce using rule 44 (expr -> expr MINUS expr .)
+    )               reduce using rule 44 (expr -> expr MINUS expr .)
+    POW             shift and go to state 32
+    DIVIDE          shift and go to state 33
+    TIMES           shift and go to state 34
+
+
 state 65
 
-    (11) func -> DEF ID ( ID ) { expr } .
-    DEF             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    {               reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    NUMBER          reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    ID              reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    (               reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    SQRT            reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    EXP             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    TAN             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    LN              reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    LOG             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    COS             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    SIN             reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    PLUS            reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    MINUS           reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
-    $end            reduce using rule 11 (func -> DEF ID ( ID ) { expr } .)
+    (45) expr -> expr PLUS expr .
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    MINUS           reduce using rule 45 (expr -> expr PLUS expr .)
+    PLUS            reduce using rule 45 (expr -> expr PLUS expr .)
+    $end            reduce using rule 45 (expr -> expr PLUS expr .)
+    }               reduce using rule 45 (expr -> expr PLUS expr .)
+    )               reduce using rule 45 (expr -> expr PLUS expr .)
+    POW             shift and go to state 32
+    DIVIDE          shift and go to state 33
+    TIMES           shift and go to state 34
+
+
+state 66
+
+    (17) exprs -> { expr } . exprs
+    (15) exprs -> . empty
+    (16) exprs -> . expr
+    (17) exprs -> . { expr } exprs
+    (2) empty -> .
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    {               shift and go to state 17
+    $end            reduce using rule 2 (empty -> .)
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
+
+    expr                           shift and go to state 16
+    exprs                          shift and go to state 73
+    empty                          shift and go to state 74
+
+state 67
+
+    (21) expr -> ID ( error . )
+    )               shift and go to state 75
+
+
+state 68
+
+    (22) expr -> ID ( expr . )
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    )               shift and go to state 76
+    POW             shift and go to state 32
+    DIVIDE          shift and go to state 33
+    TIMES           shift and go to state 34
+    MINUS           shift and go to state 35
+    PLUS            shift and go to state 36
+
+
+state 69
+
+    (20) expr -> ( expr ) .
+    POW             reduce using rule 20 (expr -> ( expr ) .)
+    DIVIDE          reduce using rule 20 (expr -> ( expr ) .)
+    TIMES           reduce using rule 20 (expr -> ( expr ) .)
+    MINUS           reduce using rule 20 (expr -> ( expr ) .)
+    PLUS            reduce using rule 20 (expr -> ( expr ) .)
+    $end            reduce using rule 20 (expr -> ( expr ) .)
+    }               reduce using rule 20 (expr -> ( expr ) .)
+    )               reduce using rule 20 (expr -> ( expr ) .)
+
+
+state 70
+
+    (13) diffarg -> { DIFF error } .
+    {               reduce using rule 13 (diffarg -> { DIFF error } .)
+    NUMBER          reduce using rule 13 (diffarg -> { DIFF error } .)
+    ID              reduce using rule 13 (diffarg -> { DIFF error } .)
+    (               reduce using rule 13 (diffarg -> { DIFF error } .)
+    SQRT            reduce using rule 13 (diffarg -> { DIFF error } .)
+    EXP             reduce using rule 13 (diffarg -> { DIFF error } .)
+    TAN             reduce using rule 13 (diffarg -> { DIFF error } .)
+    LN              reduce using rule 13 (diffarg -> { DIFF error } .)
+    LOG             reduce using rule 13 (diffarg -> { DIFF error } .)
+    COS             reduce using rule 13 (diffarg -> { DIFF error } .)
+    SIN             reduce using rule 13 (diffarg -> { DIFF error } .)
+    PLUS            reduce using rule 13 (diffarg -> { DIFF error } .)
+    MINUS           reduce using rule 13 (diffarg -> { DIFF error } .)
+    $end            reduce using rule 13 (diffarg -> { DIFF error } .)
+
+
+state 71
+
+    (14) diffarg -> { DIFF ID } .
+    {               reduce using rule 14 (diffarg -> { DIFF ID } .)
+    NUMBER          reduce using rule 14 (diffarg -> { DIFF ID } .)
+    ID              reduce using rule 14 (diffarg -> { DIFF ID } .)
+    (               reduce using rule 14 (diffarg -> { DIFF ID } .)
+    SQRT            reduce using rule 14 (diffarg -> { DIFF ID } .)
+    EXP             reduce using rule 14 (diffarg -> { DIFF ID } .)
+    TAN             reduce using rule 14 (diffarg -> { DIFF ID } .)
+    LN              reduce using rule 14 (diffarg -> { DIFF ID } .)
+    LOG             reduce using rule 14 (diffarg -> { DIFF ID } .)
+    COS             reduce using rule 14 (diffarg -> { DIFF ID } .)
+    SIN             reduce using rule 14 (diffarg -> { DIFF ID } .)
+    PLUS            reduce using rule 14 (diffarg -> { DIFF ID } .)
+    MINUS           reduce using rule 14 (diffarg -> { DIFF ID } .)
+    $end            reduce using rule 14 (diffarg -> { DIFF ID } .)
+
+
+state 72
+
+    (11) func -> DEF ID ( ID ) . { error }
+    (12) func -> DEF ID ( ID ) . { expr }
+    {               shift and go to state 77
+
+
+state 73
+
+    (17) exprs -> { expr } exprs .
+    $end            reduce using rule 17 (exprs -> { expr } exprs .)
+
+
+state 74
+
+    (15) exprs -> empty .
+    $end            reduce using rule 15 (exprs -> empty .)
+
+
+state 75
+
+    (21) expr -> ID ( error ) .
+    POW             reduce using rule 21 (expr -> ID ( error ) .)
+    DIVIDE          reduce using rule 21 (expr -> ID ( error ) .)
+    TIMES           reduce using rule 21 (expr -> ID ( error ) .)
+    MINUS           reduce using rule 21 (expr -> ID ( error ) .)
+    PLUS            reduce using rule 21 (expr -> ID ( error ) .)
+    $end            reduce using rule 21 (expr -> ID ( error ) .)
+    }               reduce using rule 21 (expr -> ID ( error ) .)
+    )               reduce using rule 21 (expr -> ID ( error ) .)
+
+
+state 76
+
+    (22) expr -> ID ( expr ) .
+    POW             reduce using rule 22 (expr -> ID ( expr ) .)
+    DIVIDE          reduce using rule 22 (expr -> ID ( expr ) .)
+    TIMES           reduce using rule 22 (expr -> ID ( expr ) .)
+    MINUS           reduce using rule 22 (expr -> ID ( expr ) .)
+    PLUS            reduce using rule 22 (expr -> ID ( expr ) .)
+    $end            reduce using rule 22 (expr -> ID ( expr ) .)
+    }               reduce using rule 22 (expr -> ID ( expr ) .)
+    )               reduce using rule 22 (expr -> ID ( expr ) .)
+
+
+state 77
+
+    (11) func -> DEF ID ( ID ) { . error }
+    (12) func -> DEF ID ( ID ) { . expr }
+    (18) expr -> . NUMBER
+    (19) expr -> . ID
+    (20) expr -> . ( expr )
+    (21) expr -> . ID ( error )
+    (22) expr -> . ID ( expr )
+    (23) expr -> . SQRT error
+    (24) expr -> . EXP error
+    (25) expr -> . TAN error
+    (26) expr -> . LN error
+    (27) expr -> . LOG error
+    (28) expr -> . COS error
+    (29) expr -> . SIN error
+    (30) expr -> . SQRT expr
+    (31) expr -> . EXP expr
+    (32) expr -> . TAN expr
+    (33) expr -> . LN expr
+    (34) expr -> . LOG expr
+    (35) expr -> . COS expr
+    (36) expr -> . SIN expr
+    (37) expr -> . PLUS error
+    (38) expr -> . MINUS error
+    (39) expr -> . PLUS expr
+    (40) expr -> . MINUS expr
+    (41) expr -> . expr POW expr
+    (42) expr -> . expr DIVIDE expr
+    (43) expr -> . expr TIMES expr
+    (44) expr -> . expr MINUS expr
+    (45) expr -> . expr PLUS expr
+    error           shift and go to state 78
+    NUMBER          shift and go to state 18
+    ID              shift and go to state 19
+    (               shift and go to state 20
+    SQRT            shift and go to state 21
+    EXP             shift and go to state 22
+    TAN             shift and go to state 23
+    LN              shift and go to state 24
+    LOG             shift and go to state 25
+    COS             shift and go to state 26
+    SIN             shift and go to state 27
+    PLUS            shift and go to state 28
+    MINUS           shift and go to state 29
+
+    expr                           shift and go to state 79
+
+state 78
+
+    (11) func -> DEF ID ( ID ) { error . }
+    }               shift and go to state 80
+
+
+state 79
+
+    (12) func -> DEF ID ( ID ) { expr . }
+    (41) expr -> expr . POW expr
+    (42) expr -> expr . DIVIDE expr
+    (43) expr -> expr . TIMES expr
+    (44) expr -> expr . MINUS expr
+    (45) expr -> expr . PLUS expr
+    }               shift and go to state 81
+    POW             shift and go to state 32
+    DIVIDE          shift and go to state 33
+    TIMES           shift and go to state 34
+    MINUS           shift and go to state 35
+    PLUS            shift and go to state 36
+
+
+state 80
+
+    (11) func -> DEF ID ( ID ) { error } .
+    DEF             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    {               reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    NUMBER          reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    ID              reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    (               reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    SQRT            reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    EXP             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    TAN             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    LN              reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    LOG             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    COS             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    SIN             reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    PLUS            reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    MINUS           reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+    $end            reduce using rule 11 (func -> DEF ID ( ID ) { error } .)
+
+
+state 81
+
+    (12) func -> DEF ID ( ID ) { expr } .
+    DEF             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    {               reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    NUMBER          reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    ID              reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    (               reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    SQRT            reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    EXP             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    TAN             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    LN              reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    LOG             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    COS             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    SIN             reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    PLUS            reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    MINUS           reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
+    $end            reduce using rule 12 (func -> DEF ID ( ID ) { expr } .)
 
 
 Conflicts:
 
 shift/reduce conflict for { in state 2 resolved as shift
+reduce/reduce conflict in state 14 resolved using rule optexprs -> empty
+rejected rule (exprs -> empty) in state 14

@@ -77,9 +77,17 @@ class mathParser(Parser):
             self.funcs[p.ID0] = ast.Func(p.ID0, p.ID1, p.expr)
             return self.funcs[p.ID0]
 
+    @_('DEF ID "(" ID ")" "{" error "}"')
+    def func(self, p):
+        print("Error in defining function " + p.ID0)
+
     @_('"{" DIFF ID "}"')
     def diffarg(self, p):
-        return ast.DIFFARG(p.ID)
+        return ast.Diffarg(p.ID)
+
+    @_('"{" DIFF error "}"')
+    def diffarg(self, p):
+        print("Expected ID in diffarg")
 
     @_('"{" expr "}" exprs')
     def exprs(self, p):
@@ -88,6 +96,10 @@ class mathParser(Parser):
     @_('expr')
     def exprs(self, p):
         return ast.Exprs(p.expr, None)
+
+    @_('empty')
+    def exprs(self, p):
+        pass
 
     @_('expr PLUS expr',
        'expr MINUS expr',
@@ -102,6 +114,12 @@ class mathParser(Parser):
     def expr(self, p):
         return ast.UnOp(p[0], p.expr, self.funcs)
 
+    @_('MINUS error %prec UMINUS',
+       'PLUS  error %prec UPLUS')
+    def expr(self, p):
+        print("Error at " + p[0] + " operation at line " +
+              str(p.lineno) + " pos " + str(p.index))
+
     @_('SIN  expr',
        'COS  expr',
        'LOG  expr',
@@ -112,12 +130,28 @@ class mathParser(Parser):
     def expr(self, p):
         return ast.FuncOp(p[0], p.expr, self.funcs)
 
+    @_('SIN  error',
+       'COS  error',
+       'LOG  error',
+       'LN   error',
+       'TAN  error',
+       'EXP  error',
+       'SQRT error')
+    def expr(self, p):
+        print("Error at " + p[0] + " operation at line " +
+              str(p.lineno) + " pos " + str(p.index))
+
     @_('ID "(" expr ")" %prec FUNC')
     def expr(self, p):
         if p.ID not in self.funcs:
-            print("Function " + p.ID0 + " not defined")
+            print("Function " + p.ID + " not defined")
         else:
             return ast.FuncOp(p.ID, p.expr, self.funcs)
+
+    @_('ID "(" error ")" %prec FUNC')
+    def expr(self, p):
+        print("Error at " + p.ID + " function call at line " +
+              str(p.lineno) + " pos " + str(p.index))
 
     @_('"(" expr ")"')
     def expr(self, p):

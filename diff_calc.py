@@ -1,4 +1,5 @@
 from sly import Lexer
+from sly.lex import LexError
 
 
 class mathLexer(Lexer):

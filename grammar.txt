@@ -12,7 +12,7 @@ FUNC ::= def id '(' id ')' '{' EXPR '}'
 
 DIFFARG ::= '{' diffby id '}'
 
-EXPRS ::= '{' EXPR '}' EXPRS | EXPR
+EXPRS ::= '{' EXPR '}' EXPRS | EXPR | EMPTY 
 
 EXPR ::=   EXPR + EXPR
          | EXPR - EXPR

@@ -1,4 +1,5 @@
 from graphviz import Digraph
+import re
 
 # Syntax tree node kinds
 
@@ -35,7 +36,8 @@ class Program(Base):
         result = {}
         result["python_exprs"] = self.exprs.to_python_exprs()
         if self.diffarg is not None:
-            result["diff_exprs"] = self.exprs.differentiate_exprs(self.diffarg())
+            result["diff_exprs"] = self.exprs.differentiate_exprs(
+                self.diffarg())
         return result
 
 
@@ -52,12 +54,11 @@ class Funcs(Base):
 
         self.dot.subgraph(self.func.dot)
         self.dot.edge(self.name, self.func.name)
-        
+
     def compute(self, differentiate):
+        self.func.compute(differentiate)
         if self.funcs is not None:
             self.funcs.compute(differentiate)
-        self.func.comput(differentiate)
-            
 
 
 class Func(Base):
@@ -66,19 +67,19 @@ class Func(Base):
         self.funcname = funcname
         self.arg = arg
         self.expr = expr
-        
+
         self.diff_expr = None
         self.python_expr = None
 
         self.dot.node(self.name, label=self.funcname + "(" + self.arg + ")")
         self.dot.subgraph(self.expr.dot)
         self.dot.edge(self.name, self.expr.name)
-        
-    def __call__(self, expr, diff=False):
+
+    def __call__(self, expr, diffarg=None, diff=False):
         if diff:
-            return self.diff_expr.replace + "*" + expr.differentiate_expr()
-        return self.diff_expr.replace
-        
+            return re.sub(r'(\W?)self.arg(\W?)', expr.to_python_expr(), self.diff_expr) + "*" + expr.differentiate_expr(diffarg)
+        return re.sub(r'(\W?)self.arg(\W?)', expr.to_python_expr(), self.python_expr)
+
     def compute(self, differentiate):
         if differentiate:
             self.diff_expr = self.expr.differentiate_expr(self.arg)
@@ -91,7 +92,7 @@ class Diffarg(Base):
         self.diffby = diffby
 
         self.dot.node(self.name, label="diff by " + self.diffby)
-        
+
     def __call__(self):
         return self.diffby
 
@@ -110,20 +111,21 @@ class Exprs(Base):
 
         self.dot.subgraph(self.expr.dot)
         self.dot.edge(self.name, self.expr.name)
-        
+
     def to_python_exprs(self):
         python_exprs = []
         if self.exprs is not None:
             python_exprs = self.exprs.to_python_exprs()
-        python_exprs.push(self.expr.to_python_expr())
+        python_exprs.append(self.expr.to_python_expr())
         return python_exprs
-    
+
     def differentiate_exprs(self, diffarg):
         diff_exprs = []
         if self.exprs is not None:
             diff_exprs = self.exprs.differentiate_exprs(diffarg)
-        diff_exprs.push(self.expr.differentiate_expr(diffarg))
+        diff_exprs.append(self.expr.differentiate_expr(diffarg))
         return diff_exprs
+
 
 class Expr(Base):
     def __init__(self, head, funcs) -> None:
@@ -149,7 +151,7 @@ class UnOp(Expr):
         self.dot.edge(self.name, self.expr.name)
 
     def to_python_expr(self):
-        return "(" + self.head + self.expr.to_python_expr() + ")"
+        return "(" + self.head + "(" + self.expr.to_python_expr() + "))"
 
     def differentiate_expr(self, diffarg):
         return "(" + self.head + self.expr.differentiate_expr(diffarg) + ")"
@@ -163,49 +165,49 @@ class FuncOp(UnOp):
         if self.head in self.funcs:
             return self.funcs[self.head](self.expr)
         else:
-            super().to_python_expr()
+            return super().to_python_expr()
 
     def differentiate_expr(self, diffarg):
         if self.head in self.funcs:
-            return self.funcs[self.head](self.expr, diff=true)
+            return self.funcs[self.head](self.expr, diffarg, diff=True)
         expr_diff = self.expr.differentiate_expr(diffarg)
         if expr_diff == "0":
             return "0"
 
         if self.head == "sin":
             if expr_diff == "1":
-                return "cos" + self.expr.to_python_expr()
-            return "cos" + self.expr.to_python_expr() + "*" + expr_diff
+                return "cos" + "(" + self.expr.to_python_expr() + ")"
+            return "cos" + "(" + self.expr.to_python_expr() + ")" + "*" + expr_diff
 
         if self.head == "cos":
             if expr_diff == "1":
-                return "(-sin" + self.expr.to_python_expr() + ")"
-            return "(-sin" + self.expr.to_python_expr() + ")*" + expr_diff
+                return "(-sin" + "(" + self.expr.to_python_expr() + ")" + ")"
+            return "(-sin" + "(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "log":
             if expr_diff == "1":
-                return "1/(" + self.expr.to_python_expr() + "*ln(10))"
-            return "1/(" + self.expr.to_python_expr() + "*ln(10))*" + expr_diff
+                return "1/(" + "(" + self.expr.to_python_expr() + ")" + "*ln(10))"
+            return "1/(" + "(" + self.expr.to_python_expr() + ")" + "*ln(10))*" + expr_diff
 
         if self.head == "ln":
             if expr_diff == "1":
-                return "1/" + self.expr.to_python_expr()
-            return "1/" + self.expr.to_python_expr() + "*" + expr_diff
+                return "1/" + "(" + self.expr.to_python_expr() + ")"
+            return "1/" + "(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "tan":
             if expr_diff == "1":
-                return "1/(cos" + self.expr.to_python_expr() + ")**2"
-            return "1/(cos" + self.expr.to_python_expr() + ")**2*" + expr_diff
+                return "1/(cos(" + self.expr.to_python_expr() + "))**2"
+            return "1/(cos(" + self.expr.to_python_expr() + "))**2*" + expr_diff
 
         if self.head == "exp":
             if expr_diff == "1":
-                return "exp" + self.expr.to_python_expr()
-            return "exp" + self.expr.to_python_expr() + "*" + expr_diff
+                return "exp(" + self.expr.to_python_expr() + ")"
+            return "exp(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "sqrt":
             if expr_diff == "1":
-                return "1/(2*sqrt" + self.expr.to_python_expr() + ")"
-            return "1/(2*sqrt" + self.expr.to_python_expr() + ")*" + expr_diff
+                return "1/(2*sqrt(" + self.expr.to_python_expr() + "))"
+            return "1/(2*sqrt(" + self.expr.to_python_expr() + "))*" + expr_diff
 
 
 class BinOp(Expr):
