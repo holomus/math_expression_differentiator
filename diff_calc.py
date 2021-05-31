@@ -21,9 +21,12 @@ class mathLexer(Lexer):
     DIVIDE = r'/'
     POW = r'\^'
 
-    @_(r'\d+')
+    @_(r'\d+(\.\d+)?')
     def NUMBER(self, t):
-        t.value = int(t.value)
+        if t.value.isdigit():
+            t.value = int(t.value)
+        else:
+            t.value = float(t.value)
         return t
 
     # Identifiers and keywords
