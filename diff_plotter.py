@@ -22,7 +22,6 @@ def g(x):
     range = np.arange(left, right, (right - left) / 1e6)
     x = []
     y = []
-    print(len(range))
     for i in range:
         try:
             y.append(g(i))
@@ -37,7 +36,6 @@ def show(line1, line2):
     fig = plt.figure()
     ax1 = plt.subplot(211)
     ax1.plot(line1[0], line1[1], label='original')
-    ax1.axis
     ax2 = plt.subplot(212)
     ax2.plot(line2[0], line2[1], label='diff')
     ax1.grid()
@@ -51,7 +49,6 @@ def show(line1, line2):
     # plt.axes(ymargin=-0.1)
     ax1.autoscale(enable=True, axis='y', tight=True)
     ax2.autoscale(enable=True, axis='y', tight=True)
-    print(ax1.get_ylim())
     ymin, ymax = ax1.get_ylim()
     if abs(ymin) > 1000 or abs(ymax) > 1000:
         if abs(ymin) > 1000:

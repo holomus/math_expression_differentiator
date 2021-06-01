@@ -36,8 +36,7 @@ class Program(Base):
         result = {}
         result["python_exprs"] = self.exprs.to_python_exprs()
         if self.diffarg is not None:
-            result["diff_exprs"] = self.exprs.differentiate_exprs(
-                self.diffarg())
+            result["diff_exprs"] = self.exprs.differentiate_exprs(self.diffarg())
         return result
 
 
