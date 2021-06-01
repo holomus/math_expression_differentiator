@@ -24,8 +24,11 @@ def g(x):
     y = []
     print(len(range))
     for i in range:
-        y.append(g(i))
-        x.append(i)
+        try:
+            y.append(g(i))
+            x.append(i)
+        except (ValueError, OverflowError, ZeroDivisionError):
+            continue
 
     return x, y
 

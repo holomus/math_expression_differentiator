@@ -1,8 +1,8 @@
 from graphviz import Digraph
 import re
 
-# Syntax tree node kinds
 
+# Syntax tree node kinds
 
 class Base:
     def __init__(self) -> None:
@@ -77,7 +77,8 @@ class Func(Base):
 
     def __call__(self, expr, diffarg=None, diff=False):
         if diff:
-            return re.sub(r'(\W?)self.arg(\W?)', expr.to_python_expr(), self.diff_expr) + "*" + expr.differentiate_expr(diffarg)
+            return re.sub(r'(\W?)self.arg(\W?)', expr.to_python_expr(), self.diff_expr) + "*" + expr.differentiate_expr(
+                diffarg)
         return re.sub(r'(\W?)self.arg(\W?)', expr.to_python_expr(), self.python_expr)
 
     def compute(self, differentiate):
@@ -163,6 +164,10 @@ class FuncOp(UnOp):
 
     def to_python_expr(self):
         if self.head in self.funcs:
+            if self.head == "ln":
+                return self.funcs["log"](self.expr)
+            if self.head == "log":
+                return self.funcs["log10"](self.expr)
             return self.funcs[self.head](self.expr)
         else:
             return super().to_python_expr()
@@ -176,23 +181,23 @@ class FuncOp(UnOp):
 
         if self.head == "sin":
             if expr_diff == "1":
-                return "cos" + "(" + self.expr.to_python_expr() + ")"
-            return "cos" + "(" + self.expr.to_python_expr() + ")" + "*" + expr_diff
+                return "cos(" + self.expr.to_python_expr() + ")"
+            return "cos(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "cos":
             if expr_diff == "1":
-                return "(-sin" + "(" + self.expr.to_python_expr() + ")" + ")"
-            return "(-sin" + "(" + self.expr.to_python_expr() + ")*" + expr_diff
+                return "(-sin(" + self.expr.to_python_expr() + "))"
+            return "(-sin(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "log":
             if expr_diff == "1":
-                return "1/(" + "(" + self.expr.to_python_expr() + ")" + "*ln(10))"
-            return "1/(" + "(" + self.expr.to_python_expr() + ")" + "*ln(10))*" + expr_diff
+                return "1/((" + self.expr.to_python_expr() + ")*log(10))"
+            return "1/((" + self.expr.to_python_expr() + ")*log(10))*" + expr_diff
 
         if self.head == "ln":
             if expr_diff == "1":
-                return "1/" + "(" + self.expr.to_python_expr() + ")"
-            return "1/" + "(" + self.expr.to_python_expr() + ")*" + expr_diff
+                return "1/(" + self.expr.to_python_expr() + ")"
+            return "1/(" + self.expr.to_python_expr() + ")*" + expr_diff
 
         if self.head == "tan":
             if expr_diff == "1":
@@ -208,6 +213,16 @@ class FuncOp(UnOp):
             if expr_diff == "1":
                 return "1/(2*sqrt(" + self.expr.to_python_expr() + "))"
             return "1/(2*sqrt(" + self.expr.to_python_expr() + "))*" + expr_diff
+
+
+def is_digit(string):
+    if string.isdigit():
+        return True
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
 
 
 class BinOp(Expr):
@@ -241,7 +256,19 @@ class BinOp(Expr):
             if left_expr == right_expr:
                 if head == "-":
                     return "0"
+                if is_digit(left_expr) is True:
+                    number = float(left_expr)
+                    return str(number * 2)
                 return "2*" + left_expr
+
+            if is_digit(left_expr) and is_digit(right_expr) is True:
+                num_1 = float(left_expr)
+                num_2 = float(right_expr)
+                if head == "+":
+                    return str(num_1 + num_2)
+                return str(num_1 - num_2)
+
+
         else:
             if head == "*":
                 if right_expr == "0" or left_expr == "0":
@@ -251,15 +278,32 @@ class BinOp(Expr):
                 if left_expr == "1":
                     return right_expr
 
+                if is_digit(left_expr) and is_digit(right_expr) is True:
+                    num_1 = float(left_expr)
+                    num_2 = float(right_expr)
+                    return str(num_1 * num_2)
+
             else:
                 if head == "/":
+                    if right_expr == "0":
+                        raise Exception('You cannot divide by zero')
                     if right_expr != "0" and left_expr == "0":
                         return "0"
                     if left_expr == right_expr:
                         return "1"
+
+                    if is_digit(left_expr) and is_digit(right_expr) is True:
+                        num_1 = float(left_expr)
+                        num_2 = float(right_expr)
+                        return str(num_1 / num_2)
                 else:
                     if right_expr == "0" or left_expr == "1":
                         return "1"
+                    if is_digit(left_expr) and is_digit(right_expr) is True:
+                        num_1 = float(left_expr)
+                        num_2 = float(right_expr)
+                        return str(num_1 ** num_2)
+
         return "(" + self.left.to_python_expr() + head + self.right.to_python_expr() + ")"
 
     def differentiate_expr(self, diffarg):
@@ -267,7 +311,7 @@ class BinOp(Expr):
         left_diff = self.left.differentiate_expr(diffarg)
         right_diff = self.right.differentiate_expr(diffarg)
 
-        if left_diff == "0" and right_diff == "0":
+        if left_diff == "0" and right_diff == "0" and self.head != '/':
             return "0"
 
         if self.head == "+" or self.head == "-":
@@ -282,7 +326,17 @@ class BinOp(Expr):
             if left_diff == right_diff:
                 if self.head == "-":
                     return "0"
+                if is_digit(left_diff) is True:
+                    num = float(left_diff)
+                    return str(num * 2)
                 return "2*" + left_diff
+
+            if is_digit(left_diff) and is_digit(right_diff) is True:
+                num1 = float(left_diff)
+                num2 = float(right_diff)
+                if self.head == '+':
+                    return str(num1 + num2)
+                return str(num1 - num2)
 
             return "(" + left_diff + self.head + right_diff + ")"
 
@@ -300,6 +354,16 @@ class BinOp(Expr):
             new_left_expr = left_diff + "*" + right_to_python
             new_right_expr = right_diff + "*" + left_to_python
 
+            if is_digit(left_diff) and is_digit(right_to_python) is True:
+                num1 = float(left_diff)
+                num2 = float(right_to_python)
+                return str(num1 * num2)
+
+            if is_digit(left_to_python) and is_digit(right_diff) is True:
+                num1 = float(right_diff)
+                num2 = float(left_to_python)
+                return str(num1 * num2)
+
             if right_diff == "1":
                 new_right_expr = left_to_python
             if left_diff == "1":
@@ -316,6 +380,10 @@ class BinOp(Expr):
             return "(" + new_left_expr + "+" + new_right_expr + ")"
 
         if self.head == "/":
+            if right_to_python == "0":
+                raise Exception('You cannot divide by zero')
+            if left_diff == "0" and right_diff == "0":
+                return "0"
             if left_to_python == "0" or left_to_python == right_to_python:
                 return "0"
             if right_to_python == "1":
@@ -325,6 +393,17 @@ class BinOp(Expr):
 
             new_left_expr = left_diff + "*" + right_to_python
             new_right_expr = left_to_python + "*" + right_diff
+
+            if is_digit(left_diff) and is_digit(right_to_python) is True:
+                num1 = float(left_diff)
+                num2 = float(right_to_python)
+                return str(num1 / num2)
+
+            if is_digit(left_to_python) and is_digit(right_diff) is True:
+                num1 = float(right_diff)
+                num2 = float(left_to_python)
+                return str(num1 * num2) + "/(" + right_to_python + ")**2"
+
             if right_diff == "1":
                 new_right_expr = left_to_python
             if left_diff == "1":
@@ -343,17 +422,18 @@ class BinOp(Expr):
             if right_to_python == "1":
                 return left_diff
 
-            new_left_expr = right_to_python + "*" + left_to_python + \
-                "**(" + right_to_python + "-1)*" + left_diff
-            new_right_expr = left_to_python + "**" + right_to_python + \
-                "*ln" + left_to_python + "*" + right_diff
+            new_left_expr = right_to_python + "*" + left_to_python + "**(" + right_to_python + "-1)*" + left_diff
+            new_right_expr = left_to_python + "**" + right_to_python + "*log" + left_to_python + "*" + right_diff
+
+            if is_digit(left_diff) and is_digit(right_to_python) is True:
+                num1 = float(left_diff)
+                num2 = float(right_to_python)
+                return str(num1 * num2) + "*" + left_to_python + "**" + str(num2 - 1)
 
             if right_diff == "1":
-                new_right_expr = left_to_python + "**" + \
-                    right_to_python + "*ln" + left_to_python
+                new_right_expr = left_to_python + "**" + right_to_python + "*log" + left_to_python
             if left_diff == "1":
-                new_left_expr = right_to_python + "*" + \
-                    left_to_python + "**(" + right_to_python + "-1)"
+                new_left_expr = right_to_python + "*" + left_to_python + "**(" + right_to_python + "-1)"
 
             if right_diff == "0":
                 return new_left_expr
@@ -366,8 +446,6 @@ class BinOp(Expr):
 class ID(Expr):
     def __init__(self, id, funcs):
         super().__init__(id, funcs)
-
-    # self.diff_arg = diff_arg
 
     def to_python_expr(self):
         return self.head
