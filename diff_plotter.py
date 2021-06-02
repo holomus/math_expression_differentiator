@@ -1,6 +1,6 @@
-from math import *
 import numpy as np
 import matplotlib.pyplot as plt
+from math import *
 
 f = None
 
@@ -40,12 +40,12 @@ def show(line1, line2):
     ax2.plot(line2[0], line2[1], label='diff')
     ax1.grid()
     ax2.grid()
-    ax1.set_title("function", color='w')
-    ax2.set_title("diff", color='w')
+    ax1.set_title("function", color='b')
+    ax2.set_title("diff", color='b')
     # ax1.label_outer()
     # ax2.label_outer()
-    ax1.tick_params(colors='w', which='both')
-    ax2.tick_params(colors='w', which='both')
+    ax1.tick_params(colors='b', which='both')
+    ax2.tick_params(colors='b', which='both')
     # plt.axes(ymargin=-0.1)
     ax1.autoscale(enable=True, axis='y', tight=True)
     ax2.autoscale(enable=True, axis='y', tight=True)

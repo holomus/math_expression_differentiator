@@ -165,6 +165,8 @@ class UnOp(Expr):
             for i in range(1, len(expr) - 1):
                 if expr[i] == "(" or expr[i] == ")":
                     expr = "(" + expr + ")"
+        else:
+            expr = "(" + expr + ")"
 
         return "(" + head + expr + ")"
 
@@ -196,6 +198,8 @@ class FuncOp(UnOp):
             for i in range(1, len(expr) - 1):
                 if expr[i] == "(" or expr[i] == ")":
                     expr = "(" + expr + ")"
+        else:
+            expr = "(" + expr + ")"
 
         if self.head == "sin":
             if expr_diff == "1":
@@ -462,6 +466,8 @@ class BinOp(Expr):
                     for i in range(1, len(right_to_python) - 1):
                         if right_to_python[i] == "(" or right_to_python[i] == ")":
                             right_to_python = "(" + right_to_python + ")"
+                else:
+                    right_to_python = "(" + right_to_python + ")"
 
                 if num > 0:
                     return str(num) + "/" + right_to_python + "**2"
@@ -476,6 +482,8 @@ class BinOp(Expr):
                 for i in range(1, len(right_to_python) - 1):
                     if right_to_python[i] == "(" or right_to_python[i] == ")":
                         right_to_python = "(" + right_to_python + ")"
+            else:
+                right_to_python = "(" + right_to_python + ")"
 
             if right_diff == "0":
                 return new_left_expr + "/" + right_to_python + "**2"
