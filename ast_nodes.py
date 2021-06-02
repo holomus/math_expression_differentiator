@@ -168,7 +168,7 @@ class UnOp(Expr):
         else:
             expr = "(" + expr + ")"
 
-        return "(" + head + expr + ")"
+        return head + expr
 
     def differentiate_expr(self, diffarg):
         return "(" + self.head + self.expr.differentiate_expr(diffarg) + ")"
